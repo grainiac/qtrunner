@@ -1,0 +1,15 @@
+INPUT(
+./debug\main.o
+./debug\mainwindow.o
+./debug\testsuite.o
+./debug\test.o
+./debug\googletest.o
+./debug\qtestlibtest.o
+./debug\testtypeselectiondialog.o
+./debug\addtestdialog.o
+./debug\testfactory.o
+./debug\moc_mainwindow.o
+./debug\moc_testtypeselectiondialog.o
+./debug\moc_addtestdialog.o
+./debug\qrc_QTRunner.o
+);
