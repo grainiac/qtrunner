@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'testtypeselectiondialog.ui'
 **
-** Created: Thu 14. Jan 21:19:41 2010
+** Created: Thu 14. Jan 23:49:19 2010
 **      by: Qt User Interface Compiler version 4.6.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
