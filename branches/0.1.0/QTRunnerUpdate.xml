@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<QTRunnerUpdate>
+	<LatestDevelopment>
+		<Major>0</Major>
+		<Minor>1</Minor>
+		<Patch>0</Patch>
+		<Version>0.1.0</Version>
+		<Download>http://qtrunner.googlecode.com/files/QTRunner_v.0.1.0.zip</Download>
+	</LatestDevelopment>
+<!--
+	<LatestStable>
+		<Major>0</Major>
+		<Minor>1</Minor>
+                <Patch>0</Patch>
+                <Version>0.1.0</Version>
+		<Download></Download>		
+	</LatestStable>
+-->
+</QTRunnerUpdate>

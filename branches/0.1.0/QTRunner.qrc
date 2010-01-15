@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>../images/exit.png</file>
+        <file>../images/filenew.png</file>
+        <file>../images/fileopen.png</file>
+        <file>../images/filesave.png</file>
+        <file>../images/filesaveas.png</file>
+        <file>../images/globe.png</file>
+        <file>../images/QTRunner.png</file>
+        <file>../images/QTRunner64.png</file>
+        <file>../images/google-logo.png</file>
+        <file>../images/state_failed.png</file>
+        <file>../images/state_paused.png</file>
+        <file>../images/state_running.png</file>
+        <file>../images/state_success.png</file>
+        <file>../images/qt_black34.png</file>
+        <file>../images/qt_green34.png</file>
+    </qresource>
+</RCC>
