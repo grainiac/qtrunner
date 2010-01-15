@@ -261,6 +261,20 @@ void MainWindow::actionConfigureTest()
     dlg.setModal(true);
     if(dlg.exec()==QDialog::Accepted)
     {
+        QList<QTableWidgetSelectionRange> ranges=ui->tableWidget->selectedRanges();
+        if(ranges.count())
+        {
+            Test* t=m_testSuite->getTest(ranges.at(0).topRow());
+
+            TestType tt=t->getTestType();
+            TestType tt2=(TestType)dlg.getTestType();
+
+            if(t->getTestType()!=dlg.getTestType())
+            {
+                m_testSuite->updateTest(t, (TestType) dlg.getTestType());
+                updateUserInterface();
+            }
+        }
     }
 }
 
@@ -380,7 +394,7 @@ void MainWindow::loadLogFileInTextEdit(QString fileName)
 void MainWindow::actionShowAbout()
 {
     QString html=QString("<html><body><table table style=""text-align: left; width: 100%;"" border=""0""> <tbody>")+
-                 QString("<tr><td style=""vertical-align: top;"" colspan=""1"" rowspan=""9""><img src="":/images/images/QTRunner64.png"">")+
+                 QString("<tr><td style=""vertical-align: top;"" colspan=""1"" rowspan=""11""><img src="":/images/images/QTRunner64.png"">")+
                  QString("<td colspan=""1"" rowspan=""1""><h1>QTRunner</h1></td></tr>")+
                  QString("<tr><td colspan=""1""></td></tr>")+
                  QString("<tr><td colspan=""1"">Version ")+QString(VERSION_STRING)+QString("</td></tr>")+
@@ -388,6 +402,8 @@ void MainWindow::actionShowAbout()
                  QString("<tr><td colspan=""1"">Copyright © 2010 Alex Skoruppa. All rights reserved.</td></tr>")+
                  QString("<tr><td colspan=""1""></td></tr>")+
                  QString("<tr><td colspan=""1"">QTRunner project @code.google:</td></tr>")+
+                 QString("<tr><td colspan=""1""></td></tr>")+
+                 QString("<tr><td colspan=""1""><a href=\"http://code.google.com/p/qtrunner/\">http://code.google.com/p/qtrunner/</td></tr>")+
                  QString("<tr><td colspan=""1""></td></tr>")+
                  QString("<tr><td colspan=""1"">The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</td></tr>")+
                  QString("</tbody></table></body></html>");

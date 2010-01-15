@@ -35,6 +35,7 @@ private slots:
     void initTestCase();
 
     void buildTest();
+    void transformationTest();
 
     void cleanupTestCase();
 
@@ -71,6 +72,19 @@ void TestFactoryTest::buildTest()
     delete t;
 
     delete t2;
+}
+
+void TestFactoryTest::transformationTest()
+{
+    Test* t=m_factory->buildTest(TT_GOOGLETEST, "MyFirstGoogleTest", "..\\UnitTests\\depp.exe", "test.xml");
+    Test* t2=m_factory->transformTest(t, TT_QTESTLIB);
+
+    QVERIFY( t != t2 );
+    QVERIFY( t->getTestType() != t2->getTestType() );
+    QVERIFY( t2->getTestType() == TT_QTESTLIB );
+
+    delete t2;
+    delete t;
 }
 
 QTEST_MAIN(TestFactoryTest)

@@ -60,6 +60,17 @@ void TestSuite::addTest(Test* test)
     }
 }
 
+Test* TestSuite::updateTest(Test* test, TestType newType)
+{
+    Test* newTest=const_cast<TestFactory*>(m_testFactory)->transformTest(test, newType);
+    int index=m_tests.indexOf(test);
+    m_tests.removeAt(index);
+    m_tests.insert(index, newTest);
+    delete test;
+    m_suiteChanged=true;
+    return newTest;
+}
+
 void TestSuite::removeTest(Test* test)
 {
     int index=m_tests.indexOf(test);
@@ -115,6 +126,7 @@ void TestSuite::saveSuite(QString fileName)
     QString document=getSuiteXmlDocument();
     out.writeRawData(document.toStdString().c_str(), document.length());
     m_suiteChanged=false;
+    m_suiteFileName=fileName;
 }
 
 QString TestSuite::getSuiteXmlDocument()

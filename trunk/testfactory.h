@@ -37,6 +37,7 @@ public:
     ~TestFactory();
 
     Test* buildTest(TestType typeValue, QString name, QString filePathTest, QString filePathOutput);
+    Test* transformTest(Test* sourceTest, TestType targetType);
 };
 
 #endif // TESTFACTORY_H
