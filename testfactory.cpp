@@ -54,3 +54,8 @@ Test* TestFactory::buildTest(TestType typeValue, QString name, QString filePathT
         return new NullTest("","","");
     return t;
 }
+
+Test* TestFactory::transformTest(Test* sourceTest, TestType targetType)
+{
+    return buildTest(targetType, sourceTest->getName(), sourceTest->getTestFileName(), sourceTest->getTestOutputFileName());
+}

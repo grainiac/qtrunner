@@ -26,6 +26,7 @@
 #define TESTSUITE_H
 
 #include <QtCore>
+#include "testtypes.h"
 
 class Test;
 class TestFactory;
@@ -40,6 +41,7 @@ public:
     TestFactory const * const getFactory();
 
     void addTest(Test* test);
+    Test* updateTest(Test* test, TestType newType);
     void removeTest(Test* test);
     void removeTest(int index);
     void removeAllTests();

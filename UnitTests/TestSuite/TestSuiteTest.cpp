@@ -36,11 +36,10 @@ class TestSuiteTest : public QObject
 private slots:
     void initTestCase();
     void cleanupTestCase();
-
-    void suiteWasNotModified();
     void testTheNullTest();
-    void testTheGoogleTest();
+//    void testTheGoogleTest();
     void testTheQTestLibTest();
+    void transformationTest();
     void suiteIsModified();
     void testPreviouslyInsertedTests();
     void insertItemAndThenDeleteItByIndex();
@@ -56,17 +55,16 @@ private:
 void TestSuiteTest::initTestCase()
 {
     m_testSuite=new TestSuite(m_testFactory);
+
+    Test* googleTest=m_testFactory->buildTest(TT_GOOGLETEST,"GoogleTest","d:\e.exe","");
+    m_testSuite->addTest(googleTest);
+    QVERIFY(m_testSuite->testCount() == 1);
 }
 
 void TestSuiteTest::cleanupTestCase()
 {
     delete m_testFactory;
     //delete m_testSuite; gets deleted in dtor test of TestSuite
-}
-
-void TestSuiteTest::suiteWasNotModified()
-{
-    QVERIFY(m_testSuite->hasChanged()==false);
 }
 
 void TestSuiteTest::suiteIsModified()
@@ -79,14 +77,6 @@ void TestSuiteTest::testTheNullTest()
     Test* nullTest=m_testFactory->buildTest(TT_NULLTEST,"A","","");
     m_testSuite->addTest(nullTest);
 
-    QVERIFY(m_testSuite->testCount() == 0);
-}
-
-void TestSuiteTest::testTheGoogleTest()
-{
-    Test* googleTest=m_testFactory->buildTest(TT_GOOGLETEST,"GoogleTest","d:\e.exe","");
-    m_testSuite->addTest(googleTest);
-
     QVERIFY(m_testSuite->testCount() == 1);
 }
 
@@ -96,6 +86,24 @@ void TestSuiteTest::testTheQTestLibTest()
     m_testSuite->addTest(qTestLib);
 
     QVERIFY(m_testSuite->testCount() == 2);
+
+    transformationTest();
+}
+
+void TestSuiteTest::transformationTest()
+{
+    Test* test=m_testSuite->getTest(0);
+
+    if(test->getTestType()== TT_QTESTLIB)
+    {
+        Test* transformed2GoogleTest=m_testSuite->updateTest(test, TT_GOOGLETEST);
+        QVERIFY( transformed2GoogleTest->getTestType() == TT_GOOGLETEST );
+    }
+    else
+    {
+        Test* transformed2GoogleTest=m_testSuite->updateTest(test, TT_QTESTLIB);
+        QVERIFY( transformed2GoogleTest->getTestType() == TT_QTESTLIB );
+    }
 }
 
 void TestSuiteTest::testPreviouslyInsertedTests()
