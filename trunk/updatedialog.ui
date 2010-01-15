@@ -20,7 +20,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string notr="true">Qmmander Update</string>
+   <string notr="true">QTRunner Update</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>
@@ -58,7 +58,7 @@
        <item>
         <widget class="QCheckBox" name="checkBox">
          <property name="text">
-          <string>Check for updates when Qmmander starts</string>
+          <string>Check for updates when QTRunner starts</string>
          </property>
         </widget>
        </item>
