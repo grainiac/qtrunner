@@ -36,16 +36,10 @@ class TestTypeSelectionDialog : public QDialog
 {
     Q_OBJECT
 public:
-    enum TestType
-    {
-      TT_GOOGLETEST = 0,
-      TT_QTESTLIB
-    };   
-
     TestTypeSelectionDialog(QWidget *parent, TestType defaultOption);
     ~TestTypeSelectionDialog();
 
-    int getTestType();
+    TestType getTestType();
 
 protected:
     void changeEvent(QEvent *e);

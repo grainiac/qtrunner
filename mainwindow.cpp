@@ -45,8 +45,8 @@
 MainWindow::MainWindow(TestSuite *testSuite, QWidget *parent)
 :   QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_testSuite(testSuite),
-    m_check4Updates(true),
+    _testSuite(testSuite),
+    _check4Updates(true),
     _iconPaused(0),
     _iconRunnning(0),
     _iconSuccess(0),
@@ -98,7 +98,7 @@ MainWindow::MainWindow(TestSuite *testSuite, QWidget *parent)
 
     m_apNetAccessMan=std::auto_ptr<QNetworkAccessManager>(new QNetworkAccessManager());
     connect(m_apNetAccessMan.get(), SIGNAL(finished(QNetworkReply*)), this, SLOT(check4Updates(QNetworkReply*)));
-    if(m_check4Updates)
+    if(_check4Updates)
         m_apNetAccessMan->get(QNetworkRequest(m_updateURL));
 }
 
@@ -109,7 +109,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if(m_testSuite->hasChanged())
+    if(_testSuite->hasChanged())
     {
         askUserIfProjectResetIsAllowed()
         ?   event->accept()
@@ -167,7 +167,7 @@ void MainWindow::actionAddTest()
                                            name,
                                            dlg.getTestName(),
                                            "");
-        m_testSuite->addTest(t);
+        _testSuite->addTest(t);
 
         updateUserInterface();
     }
@@ -183,17 +183,17 @@ void MainWindow::updateUserInterface()
 
 void MainWindow::updateWindowTitle()
 {    
-    if(m_testSuite->getSuiteFileName()=="")
+    if(_testSuite->getSuiteFileName()=="")
     {
-        if(m_testSuite->hasChanged())
+        if(_testSuite->hasChanged())
             this->setWindowTitle(QString("QTRunner - untitled*"));
         else
             this->setWindowTitle(QString("QTRunner - untitled"));
     }
     else
     {
-        QFileInfo fi(m_testSuite->getSuiteFileName());
-        if(m_testSuite->hasChanged())
+        QFileInfo fi(_testSuite->getSuiteFileName());
+        if(_testSuite->hasChanged())
             this->setWindowTitle(QString("QTRunner - %1*").arg(fi.fileName()));
         else
             this->setWindowTitle(QString("QTRunner - %1").arg(fi.fileName()));
@@ -209,11 +209,11 @@ void MainWindow::updateInformativeTable()
 void MainWindow::updateTestList()
 {
     ui->tableWidget->clearContents();
-    ui->tableWidget->setRowCount(m_testSuite->testCount());
+    ui->tableWidget->setRowCount(_testSuite->testCount());
 
-    for(int i=0; i<m_testSuite->testCount();i++)
+    for(int i=0; i<_testSuite->testCount();i++)
     {
-        Test* test=m_testSuite->getTest(i);
+        Test* test=_testSuite->getTest(i);
         setStateIconInTableRow(test, i);
         setTypeIconInTableRow(test, i);
         setTestNameInTableRow(test, i);
@@ -246,7 +246,7 @@ void MainWindow::setTestNameInTableRow(Test* test, int row)
 
 void MainWindow::updateProgressLabels(int actualTestIndex, int errors)
 {
-    ui->labelTestExecutableCounter->setText(QString("%1 of %2").arg(actualTestIndex).arg(m_testSuite->testCount()));
+    ui->labelTestExecutableCounter->setText(QString("%1 of %2").arg(actualTestIndex).arg(_testSuite->testCount()));
     ui->labelOKCount->setText(QString("%1").arg(actualTestIndex-errors));
     ui->labelNOKCount->setText(QString("%1").arg(errors));
 
@@ -261,7 +261,7 @@ void MainWindow::updateProgressLabels(int actualTestIndex, int errors)
     ?    ui->progressBar->setStyleSheet(styleSheetForErrors)
     :    ui->progressBar->setStyleSheet(styleSheetForSuccess);
 
-    ui->progressBar->setRange(0,m_testSuite->testCount());
+    ui->progressBar->setRange(0,_testSuite->testCount());
     ui->progressBar->setValue(actualTestIndex);
 }
 
@@ -269,9 +269,9 @@ void MainWindow::runSuite()
 {
     int errors=0;
 
-    for(int i=0; i<m_testSuite->testCount();i++)
+    for(int i=0; i<_testSuite->testCount();i++)
     {        
-        Test* test=m_testSuite->getTest(i);
+        Test* test=_testSuite->getTest(i);
 
         test->setState(TRS_RUNNING);
         updateTestList(); // The test should now be marked as running in the table
@@ -288,27 +288,24 @@ void MainWindow::actionRemoveTest()
 {
     QList<QTableWidgetSelectionRange> ranges=ui->tableWidget->selectedRanges();
     if(ranges.count())
-        m_testSuite->removeTest(ranges.at(0).topRow());
+        _testSuite->removeTest(ranges.at(0).topRow());
     updateUserInterface();
 }
 
 void MainWindow::actionConfigureTest()
 {    
-    TestTypeSelectionDialog dlg(this, TestTypeSelectionDialog::TT_GOOGLETEST);
-    dlg.setModal(true);
-    if(dlg.exec()==QDialog::Accepted)
+    QList<QTableWidgetSelectionRange> ranges=ui->tableWidget->selectedRanges();
+    if(ranges.count())
     {
-        QList<QTableWidgetSelectionRange> ranges=ui->tableWidget->selectedRanges();
-        if(ranges.count())
+        Test* t=_testSuite->getTest(ranges.at(0).topRow());
+
+        TestTypeSelectionDialog dlg(this, t->getTestType());
+        dlg.setModal(true);
+        if(dlg.exec()==QDialog::Accepted)
         {
-            Test* t=m_testSuite->getTest(ranges.at(0).topRow());
-
-            TestType tt=t->getTestType();
-            TestType tt2=(TestType)dlg.getTestType();
-
             if(t->getTestType()!=dlg.getTestType())
             {
-                m_testSuite->updateTest(t, (TestType) dlg.getTestType());
+                _testSuite->updateTest(t, dlg.getTestType());
                 updateUserInterface();
             }
         }
@@ -317,7 +314,7 @@ void MainWindow::actionConfigureTest()
 
 void MainWindow::actionResetResults()
 {
-    m_testSuite->resetSuiteTest();
+    _testSuite->resetSuiteTest();
     updateUserInterface();
 }
 
@@ -328,14 +325,14 @@ void MainWindow::actionNewProject()
 
 void MainWindow::actionSave()
 {
-    if(m_testSuite->getSuiteFileName()=="")
+    if(_testSuite->getSuiteFileName()=="")
     {
         actionSaveAs();
     }
     else
     {
-        m_testSuite->saveSuite(m_testSuite->getSuiteFileName());
-        setCurrentFile(m_testSuite->getSuiteFileName());
+        _testSuite->saveSuite(_testSuite->getSuiteFileName());
+        setCurrentFile(_testSuite->getSuiteFileName());
         updateUserInterface();
     }
 }
@@ -346,7 +343,7 @@ void MainWindow::actionSaveAs()
                                                   tr("Save project as"),
                                                   "",
                                                   tr("QTRunner Files")+" (*.qtr)");
-    m_testSuite->saveSuite(fileName);
+    _testSuite->saveSuite(fileName);
     setCurrentFile(fileName);
     updateUserInterface();
 }
@@ -362,7 +359,7 @@ void MainWindow::actionOpenProject()
         if(fileName.length()>0)
         {
             resetProjectAndUpateUserInterface();
-            m_testSuite->loadSuite(fileName);
+            _testSuite->loadSuite(fileName);
             setCurrentFile(fileName);
             updateUserInterface();
         }
@@ -374,7 +371,7 @@ void MainWindow::openProjectFromRecentFiles(const QString& fileName)
     if( canWeResetTheProject() )
     {
         resetProjectAndUpateUserInterface();
-        m_testSuite->loadSuite(fileName);
+        _testSuite->loadSuite(fileName);
         setCurrentFile(fileName);
         updateUserInterface();
     }
@@ -388,8 +385,8 @@ void MainWindow::resetProject()
 
 bool MainWindow::canWeResetTheProject()
 {
-    if(!m_testSuite->hasChanged() ||
-       (m_testSuite->hasChanged() && askUserIfProjectResetIsAllowed()) )
+    if(!_testSuite->hasChanged() ||
+       (_testSuite->hasChanged() && askUserIfProjectResetIsAllowed()) )
         return true;
     return false;
 }
@@ -407,18 +404,18 @@ bool MainWindow::askUserIfProjectResetIsAllowed()
 
 void MainWindow::resetProjectAndUpateUserInterface()
 {
-    m_testSuite->removeAllTests();
+    _testSuite->removeAllTests();
     updateUserInterface();
 }
 
 TestFactory const * const MainWindow::testFactory()
 {
-    return m_testSuite->getFactory();
+    return _testSuite->getFactory();
 }
 
 void MainWindow::tableItemSelected(int iRow, int iCol)
 {
-    Test* t=m_testSuite->getTest(iRow);
+    Test* t=_testSuite->getTest(iRow);
     QString fileName=t->getTestOutputFileName();
     loadLogFileInTextEdit(fileName);
 }
@@ -513,7 +510,7 @@ void MainWindow::processCheck4UpdateResults( QIODevice *source )
         }
     }
 
-    UpdateDialog dlg(m_check4Updates, this);
+    UpdateDialog dlg(_check4Updates, this);
     if(strVersion==QString(VERSION_STRING))
     {
         QString strText =QString("<html><body><table style=""text-align: left; width: 100%;"" border=""0"" cellspacing=""10""><tbody>")+
@@ -536,7 +533,7 @@ void MainWindow::processCheck4UpdateResults( QIODevice *source )
         dlg.setLabelText(strText);
     }
     dlg.exec();
-    m_check4Updates=dlg.getUpdateBoxState();
+    _check4Updates=dlg.getUpdateBoxState();
 }
 
 void MainWindow::setCurrentFile(const QString &fileName)
@@ -565,11 +562,16 @@ void MainWindow::updateRecentFileActions()
 
     int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
 
-    for (int i = 0; i < numRecentFiles; ++i) {
+    for (int i = 0; i < numRecentFiles; ++i)
+    {
         QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
-        _recentFileActs[i]->setText(text);
-        _recentFileActs[i]->setData(files[i]);
-        _recentFileActs[i]->setVisible(true);
+        QFile file(files[i]);
+        if(file.exists())
+        {
+            _recentFileActs[i]->setText(text);
+            _recentFileActs[i]->setData(files[i]);
+            _recentFileActs[i]->setVisible(true);
+        }
     }
     for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
         _recentFileActs[j]->setVisible(false);
@@ -579,6 +581,7 @@ QString MainWindow::strippedName(const QString &fullFileName)
 {
     return QFileInfo(fullFileName).fileName();
 }
+
 void MainWindow::readSettings()
 {
     QSettings settings("ASKsoft", "QTRunner");    
@@ -586,7 +589,7 @@ void MainWindow::readSettings()
     move(settings.value("pos", QPoint(200, 200)).toPoint());
 
     // URL to Update Server
-    m_check4Updates=settings.value("check_4_updates", true).toBool();
+    _check4Updates=settings.value("check_4_updates", true).toBool();
     m_updateURL=settings.value("update_server", QUrl("http://qtrunner.googlecode.com/files/QTRunnerUpdate.xml")).toUrl();
 
     updateRecentFileActions();
@@ -599,5 +602,5 @@ void MainWindow::writeSettings()
     settings.setValue("size", size());
 
     // save the update server url
-    settings.setValue("check_4_updates", m_check4Updates);
+    settings.setValue("check_4_updates", _check4Updates);
 }
