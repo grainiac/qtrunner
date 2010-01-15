@@ -66,9 +66,12 @@ protected:
 
 private slots:
     void check4Updates(QNetworkReply* pReply);
+    void openRecentFile();
     void tableItemSelected(int iRow, int iCol);
 
 private:
+    void openProjectFromRecentFiles(const QString& fileName);
+    void createRecentFilesMenu();
     void readSettings();
     void writeSettings();
     void processCheck4UpdateResults( QIODevice *source );
@@ -84,7 +87,10 @@ private:
     void resetProjectAndUpateUserInterface();
     bool canWeResetTheProject();
     bool askUserIfProjectResetIsAllowed();
-    void loadLogFileInTextEdit(QString fileName);
+    void loadLogFileInTextEdit(const QString& fileName);
+    void setCurrentFile(const QString &fileName);
+    void updateRecentFileActions();
+    QString strippedName(const QString &fullFileName);
 
     TestFactory const * const testFactory();
     Ui::MainWindow *ui;
@@ -92,10 +98,13 @@ private:
     bool m_check4Updates;
     QUrl m_updateURL;
     std::auto_ptr<QNetworkAccessManager> m_apNetAccessMan;
-    QIcon* m_iconPaused;
-    QIcon* m_iconRunnning;
-    QIcon* m_iconSuccess;
-    QIcon* m_iconFailure;
+    QIcon* _iconPaused;
+    QIcon* _iconRunnning;
+    QIcon* _iconSuccess;
+    QIcon* _iconFailure;
+    enum { MaxRecentFiles = 5 };
+    QAction* _recentFileActs[MaxRecentFiles];
+    QMenu* _recentFilesMenu;
 };
 
 #endif // MAINWINDOW_H

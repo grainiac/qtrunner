@@ -262,6 +262,7 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen_project"/>
+    <addaction name="actionRecent_projects"/>
     <addaction name="separator"/>
     <addaction name="actionSave_project"/>
     <addaction name="actionSave_project_as"/>
@@ -281,7 +282,7 @@
   </widget>
   <action name="actionNew">
    <property name="icon">
-    <iconset resource="QTRunner.qrc">
+    <iconset>
      <normaloff>:/images/images/filenew.png</normaloff>:/images/images/filenew.png</iconset>
    </property>
    <property name="text">
@@ -290,7 +291,7 @@
   </action>
   <action name="actionOpen_project">
    <property name="icon">
-    <iconset resource="QTRunner.qrc">
+    <iconset>
      <normaloff>:/images/images/fileopen.png</normaloff>:/images/images/fileopen.png</iconset>
    </property>
    <property name="text">
@@ -299,7 +300,7 @@
   </action>
   <action name="actionSave_project">
    <property name="icon">
-    <iconset resource="QTRunner.qrc">
+    <iconset>
      <normaloff>:/images/images/filesave.png</normaloff>:/images/images/filesave.png</iconset>
    </property>
    <property name="text">
@@ -308,7 +309,7 @@
   </action>
   <action name="actionSave_project_as">
    <property name="icon">
-    <iconset resource="QTRunner.qrc">
+    <iconset>
      <normaloff>:/images/images/filesaveas.png</normaloff>:/images/images/filesaveas.png</iconset>
    </property>
    <property name="text">
@@ -317,7 +318,7 @@
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset resource="QTRunner.qrc">
+    <iconset>
      <normaloff>:/images/images/exit.png</normaloff>:/images/images/exit.png</iconset>
    </property>
    <property name="text">
@@ -332,7 +333,7 @@
   </action>
   <action name="actionAbout_QTRunner">
    <property name="icon">
-    <iconset resource="QTRunner.qrc">
+    <iconset>
      <normaloff>:/images/images/QTRunner.png</normaloff>:/images/images/QTRunner.png</iconset>
    </property>
    <property name="text">
@@ -341,7 +342,7 @@
   </action>
   <action name="actionCheck_for_updates">
    <property name="icon">
-    <iconset resource="QTRunner.qrc">
+    <iconset>
      <normaloff>:/images/images/globe.png</normaloff>:/images/images/globe.png</iconset>
    </property>
    <property name="text">
@@ -357,11 +358,14 @@
     <string>Used Qt version...</string>
    </property>
   </action>
+  <action name="actionRecent_projects">
+   <property name="text">
+    <string>Recent projects...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="QTRunner.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>actionQuit</sender>
