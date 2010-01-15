@@ -47,10 +47,11 @@ MainWindow::MainWindow(TestSuite *testSuite, QWidget *parent)
     ui(new Ui::MainWindow),
     m_testSuite(testSuite),
     m_check4Updates(true),
-    m_iconPaused(0),
-    m_iconRunnning(0),
-    m_iconSuccess(0),
-    m_iconFailure(0)
+    _iconPaused(0),
+    _iconRunnning(0),
+    _iconSuccess(0),
+    _iconFailure(0),
+    _recentFilesMenu(0)
 {
     ui->setupUi(this);
 
@@ -68,6 +69,9 @@ MainWindow::MainWindow(TestSuite *testSuite, QWidget *parent)
     updateInformativeTable();
 
     this->setWindowTitle("QTRunner - <untitled>");
+
+    // Recent files menu
+    createRecentFilesMenu();
 
     // Files menu
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(actionNewProject()));
@@ -128,6 +132,26 @@ void MainWindow::changeEvent(QEvent *e)
     default:
         break;
     }
+}
+
+void MainWindow::openRecentFile()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action)
+        openProjectFromRecentFiles(action->data().toString());
+}
+
+void MainWindow::createRecentFilesMenu()
+{
+    _recentFilesMenu=new QMenu(this);
+    for (int i = 0; i < MaxRecentFiles; ++i)
+    {
+        _recentFileActs[i] = new QAction(this);
+        _recentFileActs[i]->setVisible(false);
+        _recentFilesMenu->addAction(_recentFileActs[i]);
+        connect(_recentFileActs[i], SIGNAL(triggered()), this, SLOT(openRecentFile()));
+    }
+    ui->actionRecent_projects->setMenu(_recentFilesMenu);
 }
 
 void MainWindow::actionAddTest()
@@ -311,6 +335,7 @@ void MainWindow::actionSave()
     else
     {
         m_testSuite->saveSuite(m_testSuite->getSuiteFileName());
+        setCurrentFile(m_testSuite->getSuiteFileName());
         updateUserInterface();
     }
 }
@@ -322,6 +347,7 @@ void MainWindow::actionSaveAs()
                                                   "",
                                                   tr("QTRunner Files")+" (*.qtr)");
     m_testSuite->saveSuite(fileName);
+    setCurrentFile(fileName);
     updateUserInterface();
 }
 
@@ -337,9 +363,20 @@ void MainWindow::actionOpenProject()
         {
             resetProjectAndUpateUserInterface();
             m_testSuite->loadSuite(fileName);
+            setCurrentFile(fileName);
             updateUserInterface();
-            QFileInfo fi(fileName);
         }
+    }
+}
+
+void MainWindow::openProjectFromRecentFiles(const QString& fileName)
+{
+    if( canWeResetTheProject() )
+    {
+        resetProjectAndUpateUserInterface();
+        m_testSuite->loadSuite(fileName);
+        setCurrentFile(fileName);
+        updateUserInterface();
     }
 }
 
@@ -386,7 +423,7 @@ void MainWindow::tableItemSelected(int iRow, int iCol)
     loadLogFileInTextEdit(fileName);
 }
 
-void MainWindow::loadLogFileInTextEdit(QString fileName)
+void MainWindow::loadLogFileInTextEdit(const QString& fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -502,15 +539,57 @@ void MainWindow::processCheck4UpdateResults( QIODevice *source )
     m_check4Updates=dlg.getUpdateBoxState();
 }
 
+void MainWindow::setCurrentFile(const QString &fileName)
+{
+    QSettings settings("ASKsoft", "QTRunner");
+    QStringList files = settings.value("recentFileList").toStringList();
+    files.removeAll(fileName);
+    files.prepend(fileName);
+    while (files.size() > MaxRecentFiles)
+        files.removeLast();
+
+    settings.setValue("recentFileList", files);
+
+    foreach (QWidget *widget, QApplication::topLevelWidgets())
+    {
+        MainWindow *mainWin = qobject_cast<MainWindow *>(widget);
+        if (mainWin)
+            mainWin->updateRecentFileActions();
+    }
+}
+
+void MainWindow::updateRecentFileActions()
+{
+    QSettings settings("ASKsoft", "QTRunner");
+    QStringList files = settings.value("recentFileList").toStringList();
+
+    int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
+
+    for (int i = 0; i < numRecentFiles; ++i) {
+        QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
+        _recentFileActs[i]->setText(text);
+        _recentFileActs[i]->setData(files[i]);
+        _recentFileActs[i]->setVisible(true);
+    }
+    for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
+        _recentFileActs[j]->setVisible(false);
+}
+
+QString MainWindow::strippedName(const QString &fullFileName)
+{
+    return QFileInfo(fullFileName).fileName();
+}
 void MainWindow::readSettings()
 {
     QSettings settings("ASKsoft", "QTRunner");    
-    resize(settings.value("size", QSize(800, 600)).toSize());
+    resize(settings.value("size", QSize(476, 595)).toSize());
     move(settings.value("pos", QPoint(200, 200)).toPoint());
 
     // URL to Update Server
     m_check4Updates=settings.value("check_4_updates", true).toBool();
     m_updateURL=settings.value("update_server", QUrl("http://qtrunner.googlecode.com/files/QTRunnerUpdate.xml")).toUrl();
+
+    updateRecentFileActions();
 }
 
 void MainWindow::writeSettings()
