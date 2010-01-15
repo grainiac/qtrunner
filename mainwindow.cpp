@@ -24,6 +24,7 @@
 ****************************************************************************/
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "updatedialog.h"
 
 #include <QtCore>
 #include <QCloseEvent>
@@ -31,6 +32,8 @@
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QFileDialog>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include "addtestdialog.h"
 #include "testtypeselectiondialog.h"
 #include "testsuite.h"
@@ -42,7 +45,8 @@
 MainWindow::MainWindow(TestSuite *testSuite, QWidget *parent)
 :   QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_testSuite(testSuite),    
+    m_testSuite(testSuite),
+    m_check4Updates(true),
     m_iconPaused(0),
     m_iconRunnning(0),
     m_iconSuccess(0),
@@ -71,11 +75,12 @@ MainWindow::MainWindow(TestSuite *testSuite, QWidget *parent)
     connect(ui->actionSave_project, SIGNAL(triggered()), this, SLOT(actionSave()));
     connect(ui->actionSave_project_as, SIGNAL(triggered()), this, SLOT(actionSaveAs()));
 
-    // Help menu
-    connect(ui->pushButtonRunTestSuite, SIGNAL(clicked()), this, SLOT(runSuite()));
-    connect(ui->actionAbout_QTRunner, SIGNAL(triggered()), this, SLOT(actionShowAbout()));    
+    // Help menu    
+    connect(ui->actionAbout_QTRunner, SIGNAL(triggered()), this, SLOT(actionShowAbout()));
+    connect(ui->actionCheck_for_updates, SIGNAL(triggered()), this, SLOT(actionCheck4Updates()));
 
     // Buttons in main widget
+    connect(ui->pushButtonRunTestSuite, SIGNAL(clicked()), this, SLOT(runSuite()));
     connect(ui->pushButtonAddTest, SIGNAL(clicked()), this, SLOT(actionAddTest()));
     connect(ui->pushButtonRemoveTest, SIGNAL(clicked()), this, SLOT(actionRemoveTest()));
     connect(ui->pushButtonConfigureTest, SIGNAL(clicked()), this, SLOT(actionConfigureTest()));
@@ -83,7 +88,14 @@ MainWindow::MainWindow(TestSuite *testSuite, QWidget *parent)
 
     // Events
     connect(ui->tableWidget, SIGNAL(cellClicked(int,int)), this, SLOT(tableItemSelected(int,int)));
-    connect(ui->tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableItemSelected(int,int)));    
+    connect(ui->tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableItemSelected(int,int)));
+
+    readSettings();
+
+    m_apNetAccessMan=std::auto_ptr<QNetworkAccessManager>(new QNetworkAccessManager());
+    connect(m_apNetAccessMan.get(), SIGNAL(finished(QNetworkReply*)), this, SLOT(check4Updates(QNetworkReply*)));
+    if(m_check4Updates)
+        m_apNetAccessMan->get(QNetworkRequest(m_updateURL));
 }
 
 MainWindow::~MainWindow()
@@ -101,6 +113,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
     else
     {
+        writeSettings();
         event->accept();
     }
 }
@@ -413,4 +426,99 @@ void MainWindow::actionShowAbout()
     msgBox.addButton(QMessageBox::Ok);
     msgBox.setText(html);
     msgBox.exec();
+}
+
+void MainWindow::actionCheck4Updates()
+{
+    m_apNetAccessMan->get(QNetworkRequest(m_updateURL));
+}
+
+void MainWindow::check4Updates(QNetworkReply* reply)
+{
+    if ( reply->error() != QNetworkReply::NoError )
+    {
+        qDebug() << "Request failed, " << reply->errorString();
+        return;
+    }
+
+    qDebug() << "Request succeeded";
+    processCheck4UpdateResults( reply );
+}
+
+void MainWindow::processCheck4UpdateResults( QIODevice *source )
+{
+    QString strVersion;
+    QString strDownload;
+    QXmlStreamReader reader( source );
+    while(!reader.atEnd())
+    {
+        QXmlStreamReader::TokenType tokenType = reader.readNext();
+        if ( tokenType == QXmlStreamReader::StartElement )
+        {
+            if ( reader.name() == QString("Version") )
+            {
+                tokenType=reader.readNext();
+                if(tokenType == QXmlStreamReader::Characters)
+                {
+                    strVersion=reader.text().toString();
+                    qDebug() << strVersion;
+                }
+            }
+            if ( reader.name() == QString("Download") )
+            {
+                tokenType=reader.readNext();
+                if(tokenType == QXmlStreamReader::Characters)
+                {
+                    strDownload=reader.text().toString();
+                    qDebug() << strDownload;
+                }
+            }
+        }
+    }
+
+    UpdateDialog dlg(m_check4Updates, this);
+    if(strVersion==QString(VERSION_STRING))
+    {
+        QString strText =QString("<html><body><table style=""text-align: left; width: 100%;"" border=""0"" cellspacing=""10""><tbody>")+
+                         QString("<tr><td colspan=""2""><b>You have the newest version of QTRunner!</b><(td></tr>")+
+                         QString("<tr><td colspan=""2"">Version ")+QString(VERSION_STRING)+QString("</td></tr>")+
+                         QString("</tbody></table></body></html>");
+
+        dlg.setLabelText(strText);
+    }
+    else
+    {
+        QString strText =QString("<html><body><table style=""text-align: left; width: 100%;"" border=""0"" cellspacing=""10""><tbody>")+
+                         QString("<tr><td colspan=""2""><b>There's a new version of QTRunner available!</b><(td></tr>")+
+                         QString("<tr><td colspan=""2"">Your version: ")+QString(VERSION_STRING)+QString("</td></tr>")+
+                         QString("<tr><td colspan=""2""><b>New version: ")+strVersion+QString("<b></td></tr>")+
+                         QString("<tr><td colspan=""2"">You can download the new version by clicking on the link below:</td></tr>")+
+                         QString("<tr><td colspan=""2""><a href=""")+strDownload+QString(""">")+strDownload+QString("</a></td></tr>")+
+                         QString("</tbody></table></body></html>");
+
+        dlg.setLabelText(strText);
+    }
+    dlg.exec();
+    m_check4Updates=dlg.getUpdateBoxState();
+}
+
+void MainWindow::readSettings()
+{
+    QSettings settings("ASKsoft", "QTRunner");    
+    resize(settings.value("size", QSize(800, 600)).toSize());
+    move(settings.value("pos", QPoint(200, 200)).toPoint());
+
+    // URL to Update Server
+    m_check4Updates=settings.value("check_4_updates", true).toBool();
+    m_updateURL=settings.value("update_server", QUrl("http://qtrunner.googlecode.com/files/QTRunnerUpdate.xml")).toUrl();
+}
+
+void MainWindow::writeSettings()
+{
+    QSettings settings("ASKsoft", "QTRunner");
+    settings.setValue("pos", pos());
+    settings.setValue("size", size());
+
+    // save the update server url
+    settings.setValue("check_4_updates", m_check4Updates);
 }

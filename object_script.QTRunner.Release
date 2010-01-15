@@ -8,8 +8,10 @@ INPUT(
 ./release\testtypeselectiondialog.o
 ./release\addtestdialog.o
 ./release\testfactory.o
+./release\updatedialog.o
 ./release\moc_mainwindow.o
 ./release\moc_testtypeselectiondialog.o
 ./release\moc_addtestdialog.o
+./release\moc_updatedialog.o
 ./release\qrc_QTRunner.o
 );

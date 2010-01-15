@@ -2,7 +2,8 @@
 # Project created by QtCreator 2010-01-12T10:21:02
 # -------------------------------------------------
 QT += xml \
-    xmlpatterns
+    xmlpatterns \
+    network
 TARGET = QTRunner
 TEMPLATE = app
 SOURCES += main.cpp \
@@ -13,7 +14,8 @@ SOURCES += main.cpp \
     qtestlibtest.cpp \
     testtypeselectiondialog.cpp \
     addtestdialog.cpp \
-    testfactory.cpp
+    testfactory.cpp \
+    updatedialog.cpp
 HEADERS += mainwindow.h \
     testsuite.h \
     test.h \
@@ -23,10 +25,12 @@ HEADERS += mainwindow.h \
     addtestdialog.h \
     testfactory.h \
     testtypes.h \
-    version.h
+    version.h \
+    updatedialog.h
 FORMS += mainwindow.ui \
     testtypeselectiondialog.ui \
-    addtestdialog.ui
+    addtestdialog.ui \
+    updatedialog.ui
 OTHER_FILES += LicenseTemplate.txt
 RC_FILE = QTRunner.rc
 TRANSLATIONS = 
