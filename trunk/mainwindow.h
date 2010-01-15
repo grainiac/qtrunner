@@ -26,6 +26,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QUrl>
+#include <memory>
 
 namespace Ui {
     class MainWindow;
@@ -34,6 +36,8 @@ namespace Ui {
 class Test;
 class TestSuite;
 class TestFactory;
+class QNetworkAccessManager;
+class QNetworkReply;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -48,6 +52,7 @@ public slots:
     void actionSave();
     void actionSaveAs();
     void actionShowAbout();
+    void actionCheck4Updates();
     void actionAddTest();
     void actionRemoveTest();
     void actionConfigureTest();
@@ -60,9 +65,13 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
+    void check4Updates(QNetworkReply* pReply);
     void tableItemSelected(int iRow, int iCol);
 
 private:
+    void readSettings();
+    void writeSettings();
+    void processCheck4UpdateResults( QIODevice *source );
     void updateUserInterface();
     void updateWindowTitle();
     void updateInformativeTable();
@@ -78,10 +87,11 @@ private:
     void loadLogFileInTextEdit(QString fileName);
 
     TestFactory const * const testFactory();
-
     Ui::MainWindow *ui;
     TestSuite* m_testSuite;
-
+    bool m_check4Updates;
+    QUrl m_updateURL;
+    std::auto_ptr<QNetworkAccessManager> m_apNetAccessMan;
     QIcon* m_iconPaused;
     QIcon* m_iconRunnning;
     QIcon* m_iconSuccess;
