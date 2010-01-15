@@ -42,7 +42,7 @@ TestTypeSelectionDialog::~TestTypeSelectionDialog()
     delete ui;
 }
 
-int TestTypeSelectionDialog::getTestType()
+TestType TestTypeSelectionDialog::getTestType()
 {
     if(ui->radioButtonGoogle->isChecked())
         return TT_GOOGLETEST;

@@ -39,11 +39,11 @@ class TestFactory;
 class QNetworkAccessManager;
 class QNetworkReply;
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QMainWindow
+{
     Q_OBJECT
 public:
-    MainWindow(TestSuite* testSuite,               
-               QWidget *parent = 0);
+    MainWindow(TestSuite* testSuite, QWidget *parent = 0);
     ~MainWindow();
 
 public slots:
@@ -94,8 +94,8 @@ private:
 
     TestFactory const * const testFactory();
     Ui::MainWindow *ui;
-    TestSuite* m_testSuite;
-    bool m_check4Updates;
+    TestSuite* _testSuite;
+    bool _check4Updates;
     QUrl m_updateURL;
     std::auto_ptr<QNetworkAccessManager> m_apNetAccessMan;
     QIcon* _iconPaused;

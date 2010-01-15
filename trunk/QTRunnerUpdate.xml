@@ -4,17 +4,15 @@
 		<Major>0</Major>
 		<Minor>1</Minor>
 		<Patch>0</Patch>
-		<Build>1</Build>
-		<Version>0.1.0-a1-1</Version>
-		<Download>http://qmmander.googlecode.com/files/Qmmander_0.1.0-a5-7_01102010.zip</Download>
+		<Version>0.1.0</Version>
+		<Download>http://qtrunner.googlecode.com/files/QTRunner_v.0.1.0.zip</Download>
 	</LatestDevelopment>
 <!--
 	<LatestStable>
 		<Major>0</Major>
 		<Minor>1</Minor>
-	    <Patch>0</Patch>		
-		<Build>3</Build>
-		<Version>0.1.0-a1-3</Version>
+                <Patch>0</Patch>
+                <Version>0.1.0</Version>
 		<Download></Download>		
 	</LatestStable>
 -->
