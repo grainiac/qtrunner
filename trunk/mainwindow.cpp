@@ -85,8 +85,11 @@ MainWindow::MainWindow(TestSuite *testSuite, QWidget *parent)
 
     // Buttons in main widget
     connect(ui->pushButtonRunTestSuite, SIGNAL(clicked()), this, SLOT(runSuite()));
+    connect(ui->pushButtonRunSingleTest, SIGNAL(clicked()), this, SLOT(runSingleTest()));
     connect(ui->pushButtonAddTest, SIGNAL(clicked()), this, SLOT(actionAddTest()));
     connect(ui->pushButtonRemoveTest, SIGNAL(clicked()), this, SLOT(actionRemoveTest()));
+    connect(ui->pushButtonUp, SIGNAL(clicked()), this, SLOT(actionMoveUp()));
+    connect(ui->pushButtonDown, SIGNAL(clicked()), this, SLOT(actionMoveDown()));
     connect(ui->pushButtonConfigureTest, SIGNAL(clicked()), this, SLOT(actionConfigureTest()));
     connect(ui->pushButtonResetResults, SIGNAL(clicked()), this, SLOT(actionResetResults()));
 
@@ -202,10 +205,9 @@ void MainWindow::updateWindowTitle()
 
 void MainWindow::updateInformativeTable()
 {
-    updateProgressLabels(0,0);
-    ui->labelOKCount->setNum(0);
-    ui->labelNOKCount->setNum(0);    
+    updateAllProgressControls(0,0);
 }
+
 void MainWindow::updateTestList()
 {
     ui->tableWidget->clearContents();
@@ -244,25 +246,43 @@ void MainWindow::setTestNameInTableRow(Test* test, int row)
     ui->tableWidget->setItem(row, 2, new QTableWidgetItem(test->getName()));
 }
 
-void MainWindow::updateProgressLabels(int actualTestIndex, int errors)
+void MainWindow::updateAllProgressControls(int actualTestIndex, int errors)
 {
-    ui->labelTestExecutableCounter->setText(QString("%1 of %2").arg(actualTestIndex).arg(_testSuite->testCount()));
-    ui->labelOKCount->setText(QString("%1").arg(actualTestIndex-errors));
-    ui->labelNOKCount->setText(QString("%1").arg(errors));
+    setPogressBar(actualTestIndex, _testSuite->testCount(), errors);
+    setTestCounter(actualTestIndex, _testSuite->testCount());
+    setOKCounter(actualTestIndex-errors);
+    setNOKCounter(errors);    
+}
 
-
+void MainWindow::setPogressBar(int actualCount, int totalCount, bool error)
+{
     QString styleSheetForErrors=QString("QProgressBar{border: 2px solid grey; border-radius: 5px;}")+
                                 QString("QProgressBar::chunk{  background-color: #FF0000; width: 20px;}");
 
     QString styleSheetForSuccess=QString("QProgressBar{border: 2px solid grey; border-radius: 5px;}")+
                                  QString("QProgressBar::chunk{  background-color: #00FF00; width: 20px;}");
 
-    (errors > 0)
+    error
     ?    ui->progressBar->setStyleSheet(styleSheetForErrors)
     :    ui->progressBar->setStyleSheet(styleSheetForSuccess);
 
-    ui->progressBar->setRange(0,_testSuite->testCount());
-    ui->progressBar->setValue(actualTestIndex);
+    ui->progressBar->setRange(0, totalCount);
+    ui->progressBar->setValue(actualCount);
+}
+
+void MainWindow::setTestCounter(int actualCount, int totalCount)
+{
+    ui->labelTestExecutableCounter->setText(QString("%1 of %2").arg(actualCount).arg(totalCount));
+}
+
+void MainWindow::setOKCounter(int count)
+{
+    ui->labelOKCount->setNum(count);
+}
+
+void MainWindow::setNOKCounter(int count)
+{
+    ui->labelNOKCount->setNum(count);
 }
 
 void MainWindow::runSuite()
@@ -280,7 +300,30 @@ void MainWindow::runSuite()
             errors++;
 
         updateTestList(); // The test should now be marked either as succesful or failed
-        updateProgressLabels(i+1, errors);
+        updateAllProgressControls(i+1, errors);
+    }
+}
+
+void MainWindow::runSingleTest()
+{
+    QList<QTableWidgetSelectionRange> ranges=ui->tableWidget->selectedRanges();
+    if(ranges.count())
+    {
+        int testIndex=ranges.at(0).topRow();
+        Test* test=_testSuite->getTest(testIndex);
+
+        test->setState(TRS_RUNNING);
+        updateTestList(); // The test should now be marked as running in the table
+        bool success=test->execute();
+        updateTestList(); // The test should now be marked either as succesful or failed
+
+        setPogressBar(1, 1, !success);
+        setTestCounter(1,1);
+        setOKCounter(success);
+        setNOKCounter(!success);
+
+        ui->tableWidget->selectRow(testIndex);
+        tableItemSelected(testIndex, 0); // select the test item after testrun again
     }
 }
 
@@ -290,6 +333,36 @@ void MainWindow::actionRemoveTest()
     if(ranges.count())
         _testSuite->removeTest(ranges.at(0).topRow());
     updateUserInterface();
+}
+
+void MainWindow::actionMoveUp()
+{
+    QList<QTableWidgetSelectionRange> ranges=ui->tableWidget->selectedRanges();
+    if(ranges.count())
+    {
+        int index=ranges.at(0).topRow();
+        if(index>0)
+        {
+            _testSuite->swapTests(index, index-1);
+            updateUserInterface();
+            ui->tableWidget->selectRow(index-1);
+        }
+    }
+}
+
+void MainWindow::actionMoveDown()
+{
+    QList<QTableWidgetSelectionRange> ranges=ui->tableWidget->selectedRanges();
+    if(ranges.count())
+    {
+        int index=ranges.at(0).topRow();
+        if(index<_testSuite->testCount()-1)
+        {
+            _testSuite->swapTests(index, index+1);
+            updateUserInterface();
+            ui->tableWidget->selectRow(index+1);
+        }
+    }
 }
 
 void MainWindow::actionConfigureTest()

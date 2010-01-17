@@ -55,10 +55,13 @@ public slots:
     void actionCheck4Updates();
     void actionAddTest();
     void actionRemoveTest();
+    void actionMoveUp();
+    void actionMoveDown();
     void actionConfigureTest();
     void actionResetResults();
 
     void runSuite();
+    void runSingleTest();
 
 protected:
     void changeEvent(QEvent *e);
@@ -78,8 +81,12 @@ private:
     void updateUserInterface();
     void updateWindowTitle();
     void updateInformativeTable();
-    void updateProgressLabels(int actualTestIndex, int errors);
+    void updateAllProgressControls(int actualTestIndex, int errors);
     void updateTestList();
+    void setPogressBar(int actualCount, int totalCount, bool error);
+    void setTestCounter(int actualCount, int totalCount);
+    void setOKCounter(int count);
+    void setNOKCounter(int count);
     void setStateIconInTableRow(Test* test, int row);
     void setTypeIconInTableRow(Test* test, int row);
     void setTestNameInTableRow(Test* test, int row);

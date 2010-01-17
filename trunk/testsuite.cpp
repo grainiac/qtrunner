@@ -79,6 +79,14 @@ void TestSuite::removeTest(Test* test)
     m_suiteChanged=true;
 }
 
+void TestSuite::swapTests(int indexA, int indexB)
+{
+    if(indexA>=0 && indexA<testCount() &&
+       indexB>=0 && indexB<testCount() &&
+       indexA!=indexB)
+        m_tests.swap(indexA, indexB);
+}
+
 void TestSuite::removeTest(int index)
 {
     for(int i=0; i<testCount(); i++)

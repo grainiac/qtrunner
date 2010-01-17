@@ -45,6 +45,7 @@ public:
     void removeTest(Test* test);
     void removeTest(int index);
     void removeAllTests();
+    void swapTests(int indexA, int indexB);
 
     int testCount() const;
     Test* getTest(int index) const;

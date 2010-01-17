@@ -15,5 +15,12 @@
         <file>../images/state_success.png</file>
         <file>../images/qt_black34.png</file>
         <file>../images/qt_green34.png</file>
+		<file>../images/button_play.png</file>
+		<file>../images/button_add.png</file>
+		<file>../images/button_remove.png</file>
+		<file>../images/button_up.png</file>
+		<file>../images/button_down.png</file>
+		<file>../images/button_configure.png</file>
+		<file>../images/button_reset.png</file>
     </qresource>
 </RCC>

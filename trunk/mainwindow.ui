@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>402</width>
-    <height>527</height>
+    <width>316</width>
+    <height>570</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,30 @@
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QPushButton" name="pushButtonRunTestSuite">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>40</height>
+         </size>
+        </property>
         <property name="text">
          <string>Run test suite!</string>
+        </property>
+        <property name="icon">
+         <iconset resource="QTRunner.qrc">
+          <normaloff>:/images/images/button_play.png</normaloff>:/images/images/button_play.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -153,21 +175,82 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QPushButton" name="pushButtonAddTest">
+         <widget class="QPushButton" name="pushButtonRunSingleTest">
           <property name="minimumSize">
            <size>
-            <width>128</width>
-            <height>28</height>
+            <width>40</width>
+            <height>40</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>120</width>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Run selected!</string>
+          </property>
+          <property name="text">
+           <string notr="true"/>
+          </property>
+          <property name="icon">
+           <iconset resource="QTRunner.qrc">
+            <normaloff>:/images/images/button_play.png</normaloff>:/images/images/button_play.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
             <height>28</height>
            </size>
           </property>
-          <property name="text">
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonAddTest">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="toolTip">
            <string>Add test...</string>
+          </property>
+          <property name="text">
+           <string notr="true"/>
+          </property>
+          <property name="icon">
+           <iconset resource="QTRunner.qrc">
+            <normaloff>:/images/images/button_add.png</normaloff>:/images/images/button_add.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -175,20 +258,119 @@
          <widget class="QPushButton" name="pushButtonRemoveTest">
           <property name="minimumSize">
            <size>
-            <width>128</width>
-            <height>28</height>
+            <width>40</width>
+            <height>40</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>120</width>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Remove test</string>
+          </property>
+          <property name="text">
+           <string notr="true"/>
+          </property>
+          <property name="icon">
+           <iconset resource="QTRunner.qrc">
+            <normaloff>:/images/images/button_remove.png</normaloff>:/images/images/button_remove.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonUp">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Move test up</string>
+          </property>
+          <property name="text">
+           <string notr="true"/>
+          </property>
+          <property name="icon">
+           <iconset resource="QTRunner.qrc">
+            <normaloff>:/images/images/button_up.png</normaloff>:/images/images/button_up.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonDown">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Move test down</string>
+          </property>
+          <property name="text">
+           <string notr="true"/>
+          </property>
+          <property name="icon">
+           <iconset resource="QTRunner.qrc">
+            <normaloff>:/images/images/button_down.png</normaloff>:/images/images/button_down.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
             <height>28</height>
            </size>
           </property>
-          <property name="text">
-           <string>Remove test</string>
-          </property>
-         </widget>
+         </spacer>
         </item>
         <item>
          <spacer name="verticalSpacer_2">
@@ -198,7 +380,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>40</height>
+            <height>0</height>
            </size>
           </property>
          </spacer>
@@ -207,18 +389,31 @@
          <widget class="QPushButton" name="pushButtonConfigureTest">
           <property name="minimumSize">
            <size>
-            <width>128</width>
-            <height>28</height>
+            <width>40</width>
+            <height>40</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>120</width>
-            <height>28</height>
+            <width>40</width>
+            <height>40</height>
            </size>
           </property>
-          <property name="text">
+          <property name="toolTip">
            <string>Configure...</string>
+          </property>
+          <property name="text">
+           <string notr="true"/>
+          </property>
+          <property name="icon">
+           <iconset resource="QTRunner.qrc">
+            <normaloff>:/images/images/button_configure.png</normaloff>:/images/images/button_configure.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -226,18 +421,31 @@
          <widget class="QPushButton" name="pushButtonResetResults">
           <property name="minimumSize">
            <size>
-            <width>128</width>
-            <height>28</height>
+            <width>40</width>
+            <height>40</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>120</width>
-            <height>28</height>
+            <width>40</width>
+            <height>40</height>
            </size>
           </property>
-          <property name="text">
+          <property name="toolTip">
            <string>Reset results</string>
+          </property>
+          <property name="text">
+           <string notr="true"/>
+          </property>
+          <property name="icon">
+           <iconset resource="QTRunner.qrc">
+            <normaloff>:/images/images/button_reset.png</normaloff>:/images/images/button_reset.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -252,7 +460,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>402</width>
+     <width>316</width>
      <height>21</height>
     </rect>
    </property>
@@ -282,7 +490,7 @@
   </widget>
   <action name="actionNew">
    <property name="icon">
-    <iconset>
+    <iconset resource="QTRunner.qrc">
      <normaloff>:/images/images/filenew.png</normaloff>:/images/images/filenew.png</iconset>
    </property>
    <property name="text">
@@ -291,7 +499,7 @@
   </action>
   <action name="actionOpen_project">
    <property name="icon">
-    <iconset>
+    <iconset resource="QTRunner.qrc">
      <normaloff>:/images/images/fileopen.png</normaloff>:/images/images/fileopen.png</iconset>
    </property>
    <property name="text">
@@ -300,7 +508,7 @@
   </action>
   <action name="actionSave_project">
    <property name="icon">
-    <iconset>
+    <iconset resource="QTRunner.qrc">
      <normaloff>:/images/images/filesave.png</normaloff>:/images/images/filesave.png</iconset>
    </property>
    <property name="text">
@@ -309,7 +517,7 @@
   </action>
   <action name="actionSave_project_as">
    <property name="icon">
-    <iconset>
+    <iconset resource="QTRunner.qrc">
      <normaloff>:/images/images/filesaveas.png</normaloff>:/images/images/filesaveas.png</iconset>
    </property>
    <property name="text">
@@ -318,7 +526,7 @@
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset>
+    <iconset resource="QTRunner.qrc">
      <normaloff>:/images/images/exit.png</normaloff>:/images/images/exit.png</iconset>
    </property>
    <property name="text">
@@ -333,7 +541,7 @@
   </action>
   <action name="actionAbout_QTRunner">
    <property name="icon">
-    <iconset>
+    <iconset resource="QTRunner.qrc">
      <normaloff>:/images/images/QTRunner.png</normaloff>:/images/images/QTRunner.png</iconset>
    </property>
    <property name="text">
@@ -342,7 +550,7 @@
   </action>
   <action name="actionCheck_for_updates">
    <property name="icon">
-    <iconset>
+    <iconset resource="QTRunner.qrc">
      <normaloff>:/images/images/globe.png</normaloff>:/images/images/globe.png</iconset>
    </property>
    <property name="text">
@@ -365,7 +573,9 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="QTRunner.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionQuit</sender>
