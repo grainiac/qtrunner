@@ -43,6 +43,7 @@ private slots:
     void suiteIsModified();
     void testPreviouslyInsertedTests();
     void insertItemAndThenDeleteItByIndex();
+    void swapElements();
     void deleteTestSuite();
     void checkIfCreatedTestsWereAlsoDeletedByDestructor();
 
@@ -88,6 +89,18 @@ void TestSuiteTest::testTheQTestLibTest()
     QVERIFY(m_testSuite->testCount() == 2);
 
     transformationTest();
+}
+
+void TestSuiteTest::swapElements()
+{
+    int indexA=0;
+    int indexB=m_testSuite->testCount()-1;
+    Test* a=m_testSuite->getTest(indexA);
+    Test* b=m_testSuite->getTest(indexB);
+
+    m_testSuite->swapTests(indexA, indexB);
+    QVERIFY(m_testSuite->getTest(indexA) == b);
+    QVERIFY(m_testSuite->getTest(indexB) == a);
 }
 
 void TestSuiteTest::transformationTest()
